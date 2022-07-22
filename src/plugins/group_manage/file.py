@@ -1,6 +1,8 @@
+from pathlib import Path
+
 def read(Path):
     try:
-        cache = open(Path, mode="r")
+        cache = open(Path, "r", encoding='utf-8')
         msg = cache.read()
         cache.close()
         return msg
@@ -13,3 +15,8 @@ def write(Path, sth):
             return cache.write(sth)
         except:
             return False
+if __name__ == '__main__':
+    data_path = "../../../data"
+    group_path = data_path + "/group"
+    wel_path = data_path + "/group/welcome.txt"
+    print(type(read(wel_path)))

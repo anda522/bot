@@ -2,16 +2,18 @@ from nonebot import on_command, on_notice, on_message
 from nonebot.adapters.onebot.v11.event import MessageEvent
 from nonebot.adapters.onebot.v11 import NoticeEvent, Bot, GroupMessageEvent
 from nonebot.adapters.onebot.v11 import MessageSegment as ms
+from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.adapters.onebot.exception import ActionFailed
 from nonebot import require
-
+from .utils import random_sentence
 
 import json
 import random
 import datetime
 from .file import read
 
-PATH = "../../../data/group"
+data_path = "./data"
+group_path = data_path + "/group"
 
 require("nonebot_plugin_apscheduler")
 from nonebot_plugin_apscheduler import scheduler
@@ -19,16 +21,84 @@ from nonebot_plugin_apscheduler import scheduler
 tot = dict()
 
 matcher = on_command(
-    "计协",
-    aliases={'/jixie'}
+    "帮助",
+    aliases={'help'},
+    priority=1,
+    block=True,
+    permission=GROUP_OWNER
 )
-
 @matcher.handle()
 async def learn():
-    await matcher.send("Hello World")
+    path = group_path + "/welcome.txt"
+    msg = read(path)
+    await matcher.send(msg)
 
+ans000 = on_command('000', priority=1, block=True, permission=GROUP_OWNER)
+@ans000.handle()
+async def _(event: GroupMessageEvent):
+    uid = event.user_id
+    path = group_path + "/000"
+    msg = ms.at(uid) + read(path)
+    await ans000.finish(msg)
 
-msg_check = on_message()
+ans001 = on_command('001', priority=1, block=True, permission=GROUP_OWNER)
+@ans001.handle()
+async def _(event: GroupMessageEvent):
+    uid = event.user_id
+    path = group_path + "/001"
+    msg = ms.at(uid) + read(path)
+    await ans001.finish(msg)
+
+ans010 = on_command('010', priority=1, block=True, permission=GROUP_OWNER)
+@ans010.handle()
+async def _(event: GroupMessageEvent):
+    uid = event.user_id
+    path = group_path + "/010"
+    msg = ms.at(uid) + read(path)
+    await ans010.finish(msg)
+
+ans011 = on_command('011', priority=1, block=True, permission=GROUP_OWNER)
+@ans011.handle()
+async def _(event: GroupMessageEvent):
+    uid = event.user_id
+    path = group_path + "/011"
+    msg = ms.at(uid) + read(path)
+    await ans011.finish(msg)
+
+ans100 = on_command('100', priority=1, block=True, permission=GROUP_OWNER)
+@ans100.handle()
+async def _(event: GroupMessageEvent):
+    uid = event.user_id
+    path = group_path + "/100"
+    msg = ms.at(uid) + read(path)
+    await ans100.finish(msg)
+
+ans101 = on_command('101', priority=1, block=True, permission=GROUP_OWNER)
+@ans101.handle()
+async def _(event: GroupMessageEvent):
+    uid = event.user_id
+    path = group_path + "/101"
+    msg = ms.at(uid) + read(path)
+    await ans101.finish(msg)
+
+ans110 = on_command('110', priority=1, block=True, permission=GROUP_OWNER)
+@ans110.handle()
+async def _(event: GroupMessageEvent):
+    uid = event.user_id
+    path = group_path + "/110"
+    msg = ms.at(uid) + read(path)
+    await ans110.finish(msg)
+
+ans111 = on_command('111', priority=1, block=True, permission=GROUP_OWNER)
+@ans111.handle()
+async def _(event: GroupMessageEvent):
+    uid = event.user_id
+    path = group_path + "/111"
+    msg = ms.at(uid) + read(path)
+    sentence = await random_sentence()
+    await ans111.finish(msg + sentence)
+
+msg_check = on_message(priority=1, block=False)
 @msg_check.handle()
 async def _(event: MessageEvent):
     uid = event.user_id
@@ -37,7 +107,7 @@ async def _(event: MessageEvent):
         if str(msg) == tot[str(uid)]:
             tot.pop(str(uid))
             scheduler.remove_job(job_id=str(uid))
-            msg = ms.at(uid) + "欢迎加入计算机学术交流协会!"
+            msg = ms.at(uid) + "欢迎加入计算机学术交流协会!\n因本群消息过多，为防止打扰到你，可将本群设置为免打扰。\n大家可咨询任意关于学校与学习的问题，欢迎大家提问！问题参考可发送help查看。"
             await msg_check.finish(msg)
 
 async def kick_off(bot: Bot, uid, gid):
@@ -48,7 +118,7 @@ async def kick_off(bot: Bot, uid, gid):
     )
     tot.pop(str(uid))
 
-group_check = on_notice(priority=2)
+group_check = on_notice(priority=1)
 @group_check.handle()
 async def _(bot: Bot, event: NoticeEvent):
     if event.notice_type == "group_increase":
