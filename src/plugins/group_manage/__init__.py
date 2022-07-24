@@ -1,11 +1,11 @@
-from nonebot import on_command, on_notice, on_message
+from nonebot import on_command, on_notice, on_message, on_fullmatch
 from nonebot.adapters.onebot.v11.event import MessageEvent
 from nonebot.adapters.onebot.v11 import NoticeEvent, Bot, GroupMessageEvent
 from nonebot.adapters.onebot.v11 import MessageSegment as ms
 from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.adapters.onebot.exception import ActionFailed
 from nonebot import require
-from .utils import random_sentence
+from .utils import random_sentence, now_time
 
 import json
 import random
@@ -28,11 +28,12 @@ matcher = on_command(
 )
 @matcher.handle()
 async def learn():
+    time = (await now_time()) + "\n"
     path = group_path + "/welcome.txt"
-    msg = read(path)
+    msg = time + read(path)
     await matcher.send(msg)
 
-ans000 = on_command('000', priority=1, block=True)
+ans000 = on_fullmatch('000', priority=1, block=True)
 @ans000.handle()
 async def _(event: GroupMessageEvent):
     uid = event.user_id
@@ -40,7 +41,7 @@ async def _(event: GroupMessageEvent):
     msg = ms.at(uid) + read(path)
     await ans000.finish(msg)
 
-ans001 = on_command('001', priority=1, block=True)
+ans001 = on_fullmatch('001', priority=1, block=True)
 @ans001.handle()
 async def _(event: GroupMessageEvent):
     uid = event.user_id
@@ -48,7 +49,7 @@ async def _(event: GroupMessageEvent):
     msg = ms.at(uid) + read(path)
     await ans001.finish(msg)
 
-ans010 = on_command('010', priority=1, block=True)
+ans010 = on_fullmatch('010', priority=1, block=True)
 @ans010.handle()
 async def _(event: GroupMessageEvent):
     uid = event.user_id
@@ -56,7 +57,7 @@ async def _(event: GroupMessageEvent):
     msg = ms.at(uid) + read(path)
     await ans010.finish(msg)
 
-ans011 = on_command('011', priority=1, block=True)
+ans011 = on_fullmatch('011', priority=1, block=True)
 @ans011.handle()
 async def _(event: GroupMessageEvent):
     uid = event.user_id
@@ -64,7 +65,7 @@ async def _(event: GroupMessageEvent):
     msg = ms.at(uid) + read(path)
     await ans011.finish(msg)
 
-ans100 = on_command('100', priority=1, block=True)
+ans100 = on_fullmatch('100', priority=1, block=True)
 @ans100.handle()
 async def _(event: GroupMessageEvent):
     uid = event.user_id
@@ -72,7 +73,7 @@ async def _(event: GroupMessageEvent):
     msg = ms.at(uid) + read(path)
     await ans100.finish(msg)
 
-ans101 = on_command('101', priority=1, block=True)
+ans101 = on_fullmatch('101', priority=1, block=True)
 @ans101.handle()
 async def _(event: GroupMessageEvent):
     uid = event.user_id
@@ -80,7 +81,7 @@ async def _(event: GroupMessageEvent):
     msg = ms.at(uid) + read(path)
     await ans101.finish(msg)
 
-ans110 = on_command('110', priority=1, block=True)
+ans110 = on_fullmatch('110', priority=1, block=True)
 @ans110.handle()
 async def _(event: GroupMessageEvent):
     uid = event.user_id
@@ -88,7 +89,7 @@ async def _(event: GroupMessageEvent):
     msg = ms.at(uid) + read(path)
     await ans110.finish(msg)
 
-ans111 = on_command('111', priority=1, block=True)
+ans111 = on_fullmatch('111', priority=1, block=True)
 @ans111.handle()
 async def _(event: GroupMessageEvent):
     uid = event.user_id

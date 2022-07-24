@@ -1,5 +1,6 @@
 import json
 import httpx
+from datetime import datetime
 
 # 随机一言 中 + 英
 async def random_sentence() -> str:
@@ -15,3 +16,9 @@ async def random_sentence() -> str:
     except Exception as e:
         mes = ''
     return str(mes)
+
+async def now_time() -> str:
+    time = datetime.now()
+    strtime = datetime.strftime(time, "%Y-%m-%d %H:%M:%S")
+    return strtime
+
