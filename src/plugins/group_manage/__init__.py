@@ -6,11 +6,13 @@ from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.adapters.onebot.exception import ActionFailed
 from nonebot import require
 from .utils import random_sentence, now_time
+from nonebot import get_bot
 
 import json
 import random
 import datetime
 from .file import read
+
 
 data_path = "./data"
 group_path = data_path + "/group"
@@ -28,7 +30,7 @@ matcher = on_command(
 )
 @matcher.handle()
 async def learn():
-    time = (await now_time()) + "\n"
+    time = now_time() + "\n"
     path = group_path + "/welcome.txt"
     msg = time + read(path)
     await matcher.send(msg)
@@ -130,3 +132,12 @@ async def _(bot: Bot, event: NoticeEvent):
         await bot.send_group_msg(group_id=gid, message=msg)
         scheduler.add_job(kick_off, args=(bot, uid, gid), next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=30), id=str(uid))
         tot[str(uid)] = str(random_id)
+
+# 每5秒修改一次群名片
+@scheduler.scheduled_job("interval", seconds=20)
+async def modify_group_card():
+    try:
+        bot = get_bot()
+        await bot.call_api("set_group_card", **{'group_id': 477853587, 'user_id': 2579272746, 'card': now_time()})
+    except(ValueError):
+        pass

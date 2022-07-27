@@ -17,7 +17,7 @@ async def random_sentence() -> str:
         mes = ''
     return str(mes)
 
-async def now_time() -> str:
+def now_time() -> str:
     time = datetime.now()
     strtime = datetime.strftime(time, "%Y-%m-%d %H:%M:%S")
     return strtime

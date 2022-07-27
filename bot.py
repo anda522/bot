@@ -12,7 +12,8 @@ from nonebot.adapters.onebot import V11Adapter
 #            level="ERROR",
 #            format=default_format)
 
-nonebot.init()
+# nonebot.init()
+nonebot.init(apscheduler_autostart=True)
 app = nonebot.get_asgi()
 
 driver = nonebot.get_driver()
