@@ -5,7 +5,7 @@ from nonebot.adapters.onebot.v11 import MessageSegment as ms
 from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.adapters.onebot.exception import ActionFailed
 from nonebot import require
-from .utils import random_sentence, now_time
+from .utils import random_sentence, now_time, random_color
 from nonebot import get_bot
 
 import json
@@ -17,7 +17,7 @@ from .file import read
 data_path = "./data"
 group_path = data_path + "/group"
 
-require("nonebot_plugin_apscheduler")
+# require("nonebot_plugin_apscheduler")
 from nonebot_plugin_apscheduler import scheduler
 
 tot = dict()
@@ -26,7 +26,7 @@ matcher = on_command(
     "帮助",
     aliases={'help'},
     priority=1,
-    block=True
+    block=False
 )
 @matcher.handle()
 async def learn():
@@ -109,7 +109,7 @@ async def _(event: MessageEvent):
         if str(msg) == tot[str(uid)]:
             tot.pop(str(uid))
             scheduler.remove_job(job_id=str(uid))
-            msg = ms.at(uid) + "欢迎加入计算机学术交流协会!\n因本群消息过多，为防止打扰到你，可将本群设置为免打扰。\n大家可咨询任意关于学校与学习的问题，欢迎大家提问！问题参考可发送help查看。"
+            msg = ms.at(uid) + "欢迎加入计算机学术交流协会!\n因本群消息过多，可将本群设置为免打扰。\n发送 help 或者 头像表情包 有惊喜哦。"
             await msg_check.finish(msg)
 
 async def kick_off(bot: Bot, uid, gid):
@@ -127,17 +127,24 @@ async def _(bot: Bot, event: NoticeEvent):
         uid = event.user_id
         gid = event.group_id
         random_id = random.randint(1000, 9999)
-        msg = ms.at(uid) + "\n请在30秒内发送验证码: " + str(random_id) + " 进行加群验证, 否则会将您请出群聊, 谢谢配合!"
+        msg = ms.at(uid) + "\n请在30秒内在群内发送验证码: " + str(random_id) + " 进行加群验证, 否则会将您请出群聊,误踢请重进!\n赠语:\n"
+        sentence = (await random_sentence())
+        msg += sentence
         # await bot.call_api("send_group_msg", group_id=gid, message=msg)
         await bot.send_group_msg(group_id=gid, message=msg)
         scheduler.add_job(kick_off, args=(bot, uid, gid), next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=30), id=str(uid))
         tot[str(uid)] = str(random_id)
 
+
 # 每5秒修改一次群名片
-@scheduler.scheduled_job("interval", seconds=20)
+@scheduler.scheduled_job("interval", seconds=5)
 async def modify_group_card():
     try:
         bot = get_bot()
+        # 获取成员信息
+        # info = (await bot.call_api("get_group_member_info", **{'group_id': 477853587, 'user_id': 1073355443}))
+        # card = info['card']
+        # new_card = random_color() + card
         await bot.call_api("set_group_card", **{'group_id': 477853587, 'user_id': 2579272746, 'card': now_time()})
     except(ValueError):
         pass
