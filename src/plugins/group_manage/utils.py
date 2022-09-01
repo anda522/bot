@@ -2,6 +2,7 @@ import json
 import httpx
 from datetime import datetime
 from random import randint
+from typing import Union
 # 随机一言 中 + 英
 
 async def random_sentence() -> str:
@@ -23,14 +24,56 @@ def now_time() -> str:
     strtime = datetime.strftime(time, "%Y-%m-%d %H:%M:%S")
     return strtime
 
-def random_color() -> str:
-    # 潮流,朝夕,粉黛,夜空,晚秋,糖果缤纷,盛夏,日出,霓虹闪烁,马卡龙,科技感,黄昏,高级灰,冬梅,初春,红色
-    color = ['<%ĀĀ␇Þ>', '<%ĀĀ␇Ý>', '<%ĀĀ␇Ü>', '<%ĀĀ␇Û>', '<%ĀĀ␇Ú>', '<%ĀĀ␇Ù>',
-             '<%ĀĀ␇Ø>', '<%ĀĀ␇×>', '<%ĀĀ␇Ö>', '<%ĀĀ␇Õ>', '<%ĀĀ␇Ô>', '<%ĀĀ␇Ù>',
-             '<%ĀĀ␇Ù>', '<%ĀĀ␇Ù>', '<%ĀĀ␇Ù>', '<&ÿÿ5@>']
-    color_size = len(color)
-    id = randint(0, color_size - 1)
-    return color[id]
+def At(data: str):
+    """
+    检测at了谁，返回[qq, qq, qq,...]
+    包含全体成员直接返回['all']
+    如果没有at任何人，返回[]
+    :param data: event.json
+    :return: list
+    """
+    try:
+        qq_list = []
+        data = json.loads(data)
+        for msg in data["message"]:
+            if msg["type"] == "at":
+                if 'all' not in str(msg):
+                    qq_list.append(int(msg["data"]["qq"]))
+                else:
+                    return ['all']
+        return qq_list
+    except KeyError:
+        return []
 
-if __name__ == '__main__':
-    print(random_color())
+def Reply(data: str):
+    """
+    检测回复哪条消息，返回 reply 对象
+    如果没有回复任何人，返回 None
+    :param data: event.json()
+    :return: dict | None
+    """
+    try:
+        data = json.loads(data)
+        if data["reply"] and data["reply"]["message_id"]:  # 待优化
+            return data["reply"]
+        else:
+            return None
+    except KeyError:
+        return None
+
+def MsgText(data: str):
+    """
+    返回消息文本段内容(即去除 cq 码后的内容)
+    :param data: event.json()
+    :return: str
+    """
+    try:
+        data = json.loads(data)
+        # 过滤出类型为 text 的【并且过滤内容为空的】
+        msg_text_list = filter(lambda x: x["type"] == "text" and x["data"]["text"].replace(" ", "") != "",
+                               data["message"])
+        # 拼接成字符串并且去除两端空格
+        msg_text = " ".join(map(lambda x: x["data"]["text"].strip(), msg_text_list)).strip()
+        return msg_text
+    except:
+        return ""
