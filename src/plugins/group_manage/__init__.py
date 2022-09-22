@@ -6,7 +6,7 @@ from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.adapters.onebot.v11 import GROUP
 from nonebot.exception import ActionFailed
 from nonebot.permission import SUPERUSER
-from .utils import random_sentence, now_time, random_color, At, Reply, MsgText
+from .utils import random_sentence, now_time, At, Reply, MsgText
 from nonebot import get_bot
 from pathlib import Path
 from asyncio import sleep as asleep

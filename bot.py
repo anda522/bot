@@ -22,10 +22,15 @@ driver.register_adapter(
 )
 
 # 加载内置插件
-nonebot.load_builtin_plugins("echo")
+# nonebot.load_builtin_plugins("echo")
 # 加载自定义插件
-nonebot.load_plugins("src/plugins")
-
+# nonebot.load_plugins("src/plugins")
+# 加载单个插件
+# nonebot.load_plugin("src.plugins.bread")
+# nonebot.load_plugin("src.plugins.fortune")
+nonebot.load_plugin("src.plugins.group_manage")
+nonebot.load_plugin("src.plugins.petpet")
+nonebot.load_plugin()
 
 if __name__ == "__main__":
     nonebot.run(app="bot:app")
