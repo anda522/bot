@@ -1,5 +1,6 @@
 from pathlib import Path
 
+
 def read(Path):
     try:
         cache = open(Path, "r", encoding='utf-8')
@@ -9,9 +10,9 @@ def read(Path):
     except:
         return False
 
-def write(Path, sth):
+def write(Path, msg):
     with open(Path, mode="w") as cache:
         try:
-            return cache.write(sth)
+            return cache.write(msg)
         except:
             return False
