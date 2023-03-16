@@ -8,7 +8,7 @@ from .utils import json_load
 from .config import plugin_config
 
 
-async def g_admin():
+async def get_sub_admins():
     """
     :return : 分群管理json对象
     """
@@ -17,22 +17,22 @@ async def g_admin():
     return admins
 
 
-async def g_admin_add(gid: str, qq: int) -> Optional[bool]:
+async def add_sub_admins(gid: str, qq: int) -> Optional[bool]:
     """
     添加分群管理（处理加群请求时接收处理结果）
     :param gid: 群号
     :param qq: qq
     :return: bool
     """
-    admins = await g_admin()
+    admins = await get_sub_admins()
     if gid in admins:
         if qq in admins[gid]:
             logger.info(f"{qq}已经是群{gid}的分群管理了")
             return False
         else:
-            gadmins = admins[gid]
-            gadmins.append(qq)
-            admins[gid] = gadmins
+            sub_admins = admins[gid]
+            sub_admins.append(qq)
+            admins[gid] = sub_admins
             with open(plugin_config.config_group_admin, mode='w') as c:
                 c.write(str(json.dumps(admins)))
             logger.info(f"群{gid}添加分群管理：{qq}")
@@ -45,14 +45,14 @@ async def g_admin_add(gid: str, qq: int) -> Optional[bool]:
         return True
 
 
-async def g_admin_del(gid: str, qq: int) -> Optional[bool]:
+async def delete_sub_admins(gid: str, qq: int) -> Optional[bool]:
     """
     删除分群管理
     :param gid: 群号
     :param qq: qq
     :return: bool
     """
-    admins = await g_admin()
+    admins = await get_sub_admins()
     if gid in admins:
         if qq in admins[gid]:
             logger.info(f"已删除群{gid}的分群管理{qq}")
@@ -71,22 +71,6 @@ async def g_admin_del(gid: str, qq: int) -> Optional[bool]:
     else:
         logger.info(f"群{gid}还未添加过分群管理")
         return None
-
-
-# async def su_on_off() -> Optional[bool]:
-#     admins = await g_admin()
-#     if admins['su'] == 'False':
-#         admins['su'] = 'True'
-#         logger.info('打开超管消息接收')
-#         with open(plugin_config.config_group_admin, mode='w') as c:
-#             c.write(str(json.dumps(admins)))
-#         return True
-#     else:
-#         admins['su'] = 'False'
-#         logger.info('关闭超管消息接收')
-#         with open(plugin_config.config_group_admin, mode='w') as c:
-#             c.write(str(json.dumps(admins)))
-#         return False
 
 
 async def write(gid: str, answer: str) -> Optional[bool]:
