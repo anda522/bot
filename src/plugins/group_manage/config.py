@@ -11,24 +11,33 @@ class Config(BaseModel, extra=Extra.ignore):
 
     config_path = Path() / 'data' / 'group' / 'config'
     config_admin = config_path / 'admin.json'
+    # 分群管理
     config_group_admin = config_path / 'group_admin.json'
     word_path = config_path / 'word_config.txt'
     words_contents_path = config_path / 'words'
+    # 违禁词检测文本
     limit_word_path = config_path / '违禁词.txt'
+    # 状态开关
     switcher_path = config_path / '开关.json'
+    # 状态开关的模板html
     template_path = config_path / 'template'
+
     stop_words_path = config_path / 'stop_words'
+    # 词云背景图片
     wordcloud_bg_path = config_path / 'wordcloud_bg'
+    # 用户发言违规记录
     user_violation_info_path = config_path / '群内用户违规信息'
     group_message_data_path = config_path / '群消息数据'
     error_path = config_path / 'admin插件错误数据'
     broadcast_avoid_path = config_path / '广播排除群聊.json'
+    # 群聊黑名单
     black_list_path = config_path / 'black_list.json'
-
+    # 资源文件路径
     res_path = Path() / 'data' / 'group' / 'resource'
+
     re_img_path = res_path / 'imgs'
     ttf_path = res_path / 'msyhblod.ttf'
-
+    # 欢迎词路径
     welcome_path = Path() / 'data' / 'group' / 'welcome.txt'
     admin_funcs = {
         'admin': ['管理', '踢', '禁', '改', '基础群管'],
@@ -42,7 +51,6 @@ class Config(BaseModel, extra=Extra.ignore):
         'group_recall': ['防撤回', '防止撤回']
     }
 
-    # TODO 后续在这里对功能加 {‘default': True} 以便于初始化时自动设置开关状态
     funcs_name_cn = ['基础群管', '加群审批', '群词云', '违禁词检测']
 
     time_scop_map = {
@@ -57,6 +65,8 @@ class Config(BaseModel, extra=Extra.ignore):
     }
 
 
+# 获取全局启动配置 .env文件下
 driver = get_driver()
 global_config = driver.config
+
 plugin_config = Config.parse_obj(global_config)

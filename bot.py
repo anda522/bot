@@ -34,6 +34,7 @@ nonebot.load_builtin_plugins("echo")
 nonebot.load_plugin("src.plugins.group_manage")
 # nonebot.load_plugin("src.plugins.petpet")
 
+nonebot.load_plugin("src.plugins.chatbot")
 
 if __name__ == "__main__":
     nonebot.run(app="bot:app")

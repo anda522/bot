@@ -13,7 +13,6 @@ import httpx
 from typing import Union, Optional
 from pathlib import Path
 from .config import plugin_config, global_config
-# from .path import *
 
 su = global_config.superusers  # 超级管理员
 cb_notice = plugin_config.callback_notice

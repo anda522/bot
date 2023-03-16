@@ -31,6 +31,7 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent, state: T_State
 switcher_off = on_command('关', priority=1, block=True, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER)
 
 
+# 关闭开关
 @switcher_off.handle()
 async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent, state: T_State, args: Message = CommandArg()):
     gid = str(event.group_id)
@@ -45,6 +46,7 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent, state: T_State
 switcher_html = on_command('开关状态', priority=1, block=True, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER)
 
 
+# 查看开关状态
 @switcher_html.handle()
 async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
     gid = str(event.group_id)

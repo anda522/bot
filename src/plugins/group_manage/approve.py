@@ -7,6 +7,7 @@ from nonebot import logger
 from .utils import json_load
 from .config import plugin_config
 
+
 async def g_admin():
     """
     :return : 分群管理json对象
