@@ -295,66 +295,6 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
         msg += str(user) + "\n"
     await matcher.finish(msg)
 
-# set_g_admin = on_command('管理员+', permission=SUPERUSER | GROUP_OWNER, priority=1)
-#
-#
-# @set_g_admin.handle()
-# async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
-#     """
-#     管理员+ @user 添加群管理员
-#     """
-#     msg = str(event.get_message())
-#     logger.info(msg)
-#     logger.info(msg.split())
-#     sb = At(event.json())
-#     logger.info(sb)
-#     gid = event.group_id
-#     if sb:
-#         if 'all' not in sb:
-#             try:
-#                 for qq in sb:
-#                     await bot.set_group_admin(
-#                         group_id=gid,
-#                         user_id=int(qq),
-#                         enable=True
-#                     )
-#                 await log_fi(matcher, '设置管理员操作成功')
-#             except ActionFailed:
-#                 await fi(matcher, '权限不足')
-#         else:
-#             await fi(matcher, '指令不正确 或 不能含有@全体成员')
-#     else:
-#         await fi(matcher, '没有@人捏')
-#
-#
-# unset_g_admin = on_command('管理员-', permission=SUPERUSER | GROUP_OWNER, priority=1)
-#
-#
-# @unset_g_admin.handle()
-# async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
-#     """
-#     管理员- @user 取消群管理员
-#     """
-#     msg = str(event.get_message())
-#     logger.info(msg)
-#     logger.info(msg.split())
-#     sb = At(event.json())
-#     logger.info(sb)
-#     gid = event.group_id
-#     if sb:
-#         if 'all' not in sb:
-#             try:
-#                 for qq in sb:
-#                     await bot.set_group_admin(
-#                         group_id=gid,
-#                         user_id=int(qq),
-#                         enable=False
-#                     )
-#                 await log_fi(matcher, '取消管理员操作成功')
-#             except ActionFailed:
-#                 await fi(matcher, '权限不足')
-#         await fi(matcher, '指令不正确 或 不能含有@全体成员')
-
 
 set_essence = on_command("加精", aliases={'加精', 'set_essence'}, priority=5, block=True)
 
