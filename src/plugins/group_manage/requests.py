@@ -1,5 +1,6 @@
-# python3
-# -*- coding: utf-8 -*-
+"""
+群请求审批词条实现
+"""
 import json
 import re
 

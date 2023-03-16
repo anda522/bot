@@ -14,6 +14,7 @@ logger.add("./logs/{0}H Error.log".format(datetime.strftime(datetime.now(), "%Y-
            level="ERROR",
            format=default_format)
 
+# 定时器自动开始
 nonebot.init(apscheduler_autostart=True)
 app = nonebot.get_asgi()
 
@@ -29,12 +30,7 @@ nonebot.load_builtin_plugins("echo")
 # 加载插件/plugins目录
 # nonebot.load_plugins("src/plugins")
 # 加载单个插件
-# nonebot.load_plugin("src.plugins.bread")
-# nonebot.load_plugin("src.plugins.fortune")
 nonebot.load_plugin("src.plugins.group_manage")
-# nonebot.load_plugin("src.plugins.petpet")
-
-nonebot.load_plugin("src.plugins.chatbot")
 
 if __name__ == "__main__":
     nonebot.run(app="bot:app")

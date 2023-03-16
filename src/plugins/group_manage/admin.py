@@ -10,6 +10,7 @@ from nonebot.adapters.onebot.exception import ActionFailed
 from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.matcher import Matcher
 from nonebot.permission import SUPERUSER
+from nonebot.typing import T_State
 
 from .config import global_config, plugin_config
 from .utils import At, MsgText, banSb, change_s_title, fi, log_fi, sd, Reply, log_sd, json_load, json_upload
@@ -190,7 +191,7 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
                     await bot.set_group_kick(
                         group_id=gid,
                         user_id=int(qq),
-                        reject_add_request=False
+                        reject_add_request=False  # 还可再接受加群请求
                     )
                 await log_fi(matcher, '踢人操作执行完毕')
             except ActionFailed:
@@ -198,73 +199,85 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
         await fi(matcher, '不能含有@全体成员')
 
 
-kick_ = on_command('黑', permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER, priority=1, block=True)
+black = on_command('黑', aliases={'拉黑'}, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER, priority=1, block=True)
 
 
-@kick_.handle()
-async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+@black.handle()
+async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent, state: T_State):
     """
-    黑 @user 踢出并拉黑某人
+    黑 @user 拉黑某人 然后踢出
     """
+    # 检查at了谁，并不检查qq号
     sb = At(event.json())
     gid = event.group_id
     uid = event.user_id
-    if sb:
-        if 'all' not in sb:
-            try:
-                for qq in sb:
-                    if qq == event.user_id:
-                        await sd(matcher, '你在玩一种很新的东西，不能黑自己!')
-                        continue
-                    if qq in su or (str(qq) in su):
-                        await sd(matcher, '超级用户不能被黑')
-                        continue
-                    black_list = json_load(plugin_config.black_list_path)
-                    if not black_list.get(str(gid)):
-                        black_list[str(gid)] = []
-                    black_list[str(gid)].append(qq)
-                    json_upload(plugin_config.black_list_path, black_list)
-                    await bot.set_group_kick(
-                        group_id=gid,
-                        user_id=int(qq),
-                    )
-                await log_fi(matcher, '踢人并拉黑操作执行完毕')
-            except ActionFailed:
-                await fi(matcher, '权限不足')
+
+    if sb and 'all' in sb:
         await fi(matcher, '不能含有@全体成员')
+    if not sb:
+        sb = str(state['_prefix']['command_arg']).split(' ')
+
+    try:
+        for qq in sb:
+            if qq == event.user_id:
+                await sd(matcher, '不能拉黑自己!')
+                continue
+            if qq in su or (str(qq) in su):
+                await sd(matcher, '超级用户不能被黑')
+                continue
+            # 添加黑名单并更新数据
+            black_list = json_load(plugin_config.black_list_path)
+            if not black_list.get(str(gid)):
+                black_list[str(gid)] = []
+            black_list[str(gid)].append(qq)
+            json_upload(plugin_config.black_list_path, black_list)
+            # 踢出操作
+            await bot.set_group_kick(
+                group_id=gid,
+                user_id=int(qq),
+            )
+        await log_fi(matcher, '拉黑操作执行完毕，已将其踢出')
+    except ActionFailed:
+        await fi(matcher, '权限不足')
 
 
-kick_off = on_command('移除黑名单', aliases={'除黑', '移出黑名单'}, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER,
+unblack = on_command('移除黑名单', aliases={'除黑', '移出黑名单'}, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER,
                       priority=1, block=True)
 
 
-@kick_off.handle()
-async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+@unblack.handle()
+async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent, state: T_State):
     """
     移除黑名单 @user 将某人移出黑名单
     """
     sb = At(event.json())
     gid = event.group_id
     uid = event.user_id
-    if sb:
-        if 'all' not in sb:
-            try:
-                for qq in sb:
-                    if qq == event.user_id:
-                        await sd(matcher, '你在玩一种很新的东西，不能移出自己!')
-                        continue
-                    if qq in su or (str(qq) in su):
-                        await sd(matcher, '超级用户不能被操作')
-                        continue
-                    try:
-                        black_list = json_load(plugin_config.black_list_path)
-                        black_list[str(gid)].remove(qq)
-                    except KeyError:
-                        await fi(matcher, '黑名单无此人')
-                await log_fi(matcher, '移出黑名单操作执行完毕')
-            except ActionFailed:
-                await fi(matcher, '权限不足')
+
+    if sb and 'all' in sb:
         await fi(matcher, '不能含有@全体成员')
+    if not sb:
+        sb = str(state['_prefix']['command_arg']).split(' ')
+
+    try:
+        for qq in sb:
+            qq = int(qq)
+            if qq == event.user_id:
+                await sd(matcher, '不能移出自己!')
+                continue
+            if qq in su or (str(qq) in su):
+                await sd(matcher, '超级用户不能被操作')
+                continue
+            try:
+                # 移除黑名单并更新数据
+                black_list = json_load(plugin_config.black_list_path)
+                black_list[str(gid)].remove(qq)
+                json_upload(plugin_config.black_list_path, black_list)
+            except ValueError:
+                await fi(matcher, f'黑名单无此人')
+        await log_fi(matcher, '移出黑名单操作执行完毕')
+    except ActionFailed:
+        await fi(matcher, '权限不足')
 
 
 get_black_list = on_command('查看黑名单', aliases={'黑名单人员'}, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
@@ -276,71 +289,71 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
     black_list = json_load(plugin_config.black_list_path)
     gid = event.group_id
     if not black_list[str(gid)]:
-        await matcher.finish("黑名单为空")
+        await matcher.finish("本群黑名单为空")
     msg = ""
     for user in black_list[str(gid)]:
         msg += str(user) + "\n"
     await matcher.finish(msg)
 
-set_g_admin = on_command('管理员+', permission=SUPERUSER | GROUP_OWNER, priority=1)
-
-
-@set_g_admin.handle()
-async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
-    """
-    管理员+ @user 添加群管理员
-    """
-    msg = str(event.get_message())
-    logger.info(msg)
-    logger.info(msg.split())
-    sb = At(event.json())
-    logger.info(sb)
-    gid = event.group_id
-    if sb:
-        if 'all' not in sb:
-            try:
-                for qq in sb:
-                    await bot.set_group_admin(
-                        group_id=gid,
-                        user_id=int(qq),
-                        enable=True
-                    )
-                await log_fi(matcher, '设置管理员操作成功')
-            except ActionFailed:
-                await fi(matcher, '权限不足')
-        else:
-            await fi(matcher, '指令不正确 或 不能含有@全体成员')
-    else:
-        await fi(matcher, '没有@人捏')
-
-
-unset_g_admin = on_command('管理员-', permission=SUPERUSER | GROUP_OWNER, priority=1)
-
-
-@unset_g_admin.handle()
-async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
-    """
-    管理员+ @user 添加群管理员
-    """
-    msg = str(event.get_message())
-    logger.info(msg)
-    logger.info(msg.split())
-    sb = At(event.json())
-    logger.info(sb)
-    gid = event.group_id
-    if sb:
-        if 'all' not in sb:
-            try:
-                for qq in sb:
-                    await bot.set_group_admin(
-                        group_id=gid,
-                        user_id=int(qq),
-                        enable=False
-                    )
-                await log_fi(matcher, '取消管理员操作成功')
-            except ActionFailed:
-                await fi(matcher, '权限不足')
-        await fi(matcher, '指令不正确 或 不能含有@全体成员')
+# set_g_admin = on_command('管理员+', permission=SUPERUSER | GROUP_OWNER, priority=1)
+#
+#
+# @set_g_admin.handle()
+# async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+#     """
+#     管理员+ @user 添加群管理员
+#     """
+#     msg = str(event.get_message())
+#     logger.info(msg)
+#     logger.info(msg.split())
+#     sb = At(event.json())
+#     logger.info(sb)
+#     gid = event.group_id
+#     if sb:
+#         if 'all' not in sb:
+#             try:
+#                 for qq in sb:
+#                     await bot.set_group_admin(
+#                         group_id=gid,
+#                         user_id=int(qq),
+#                         enable=True
+#                     )
+#                 await log_fi(matcher, '设置管理员操作成功')
+#             except ActionFailed:
+#                 await fi(matcher, '权限不足')
+#         else:
+#             await fi(matcher, '指令不正确 或 不能含有@全体成员')
+#     else:
+#         await fi(matcher, '没有@人捏')
+#
+#
+# unset_g_admin = on_command('管理员-', permission=SUPERUSER | GROUP_OWNER, priority=1)
+#
+#
+# @unset_g_admin.handle()
+# async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+#     """
+#     管理员- @user 取消群管理员
+#     """
+#     msg = str(event.get_message())
+#     logger.info(msg)
+#     logger.info(msg.split())
+#     sb = At(event.json())
+#     logger.info(sb)
+#     gid = event.group_id
+#     if sb:
+#         if 'all' not in sb:
+#             try:
+#                 for qq in sb:
+#                     await bot.set_group_admin(
+#                         group_id=gid,
+#                         user_id=int(qq),
+#                         enable=False
+#                     )
+#                 await log_fi(matcher, '取消管理员操作成功')
+#             except ActionFailed:
+#                 await fi(matcher, '权限不足')
+#         await fi(matcher, '指令不正确 或 不能含有@全体成员')
 
 
 set_essence = on_command("加精", aliases={'加精', 'set_essence'}, priority=5, block=True)

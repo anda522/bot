@@ -17,6 +17,7 @@ from .utils import json_load, json_upload, fi, log_fi
 switcher_on = on_command('开', priority=1, block=True, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER)
 
 
+# 打开开关
 @switcher_on.handle()
 async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent, state: T_State, args: Message = CommandArg()):
     gid = str(event.group_id)
@@ -81,6 +82,7 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
                      f'开关渲染网页并截图失败，已使用文字发送，错误信息：\n{"-" * 30}{type(e)}: {e}{"-" * 30}', err=True)
 
 
+# 保存开关状态的图片
 async def save_image(url, img_path):
     """
     导出图片
@@ -130,6 +132,7 @@ async def switcher_integrity_check(bot: Bot):
     json_upload(plugin_config.switcher_path, switcher_dict)
 
 
+# 根据state对功能进行开关
 async def switcher_handle(gid, matcher, user_input_func_name, state):
     for func in plugin_config.admin_funcs:
         if user_input_func_name in plugin_config.admin_funcs[func]:

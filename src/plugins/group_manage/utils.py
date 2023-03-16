@@ -512,6 +512,7 @@ async def log_sd(cmd: Matcher, msg, log: str = None, at=False, err=False) -> Non
     await sd(cmd, msg, at)
 
 
+# 完成响应器
 async def fi(cmd: Matcher, msg) -> None:
     await cmd.finish(msg if cb_notice else None)
 

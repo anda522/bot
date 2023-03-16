@@ -73,25 +73,25 @@ async def g_admin_del(gid: str, qq: int) -> Optional[bool]:
         return None
 
 
-async def su_on_off() -> Optional[bool]:
-    admins = await g_admin()
-    if admins['su'] == 'False':
-        admins['su'] = 'True'
-        logger.info('打开超管消息接收')
-        with open(plugin_config.config_group_admin, mode='w') as c:
-            c.write(str(json.dumps(admins)))
-        return True
-    else:
-        admins['su'] = 'False'
-        logger.info('关闭超管消息接收')
-        with open(plugin_config.config_group_admin, mode='w') as c:
-            c.write(str(json.dumps(admins)))
-        return False
+# async def su_on_off() -> Optional[bool]:
+#     admins = await g_admin()
+#     if admins['su'] == 'False':
+#         admins['su'] = 'True'
+#         logger.info('打开超管消息接收')
+#         with open(plugin_config.config_group_admin, mode='w') as c:
+#             c.write(str(json.dumps(admins)))
+#         return True
+#     else:
+#         admins['su'] = 'False'
+#         logger.info('关闭超管消息接收')
+#         with open(plugin_config.config_group_admin, mode='w') as c:
+#             c.write(str(json.dumps(admins)))
+#         return False
 
 
 async def write(gid: str, answer: str) -> Optional[bool]:
     """
-    写入词条
+    添加词条
     :param gid: 群号
     :param answer: 词条
     :return: bool
@@ -109,7 +109,6 @@ async def write(gid: str, answer: str) -> Optional[bool]:
                 c.write(str(json.dumps(contents)))
             logger.info(f"群{gid}添加入群审批词条：{answer}")
             return True
-
     else:
         logger.info(f"群{gid}第一次配置此词条：{answer}")
         contents.update({gid: [answer]})

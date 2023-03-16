@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 class Config(BaseModel, extra=Extra.ignore):
-
+    # 回调通知是否开启，即事件响应通知
     callback_notice: bool = True
     ban_rand_time_min: int = 60  # 随机禁言最短时间(s) default: 1分钟
     ban_rand_time_max: int = 24 * 60 * 60  # 随机禁言最长时间(s) default: 1天
@@ -39,6 +39,7 @@ class Config(BaseModel, extra=Extra.ignore):
     ttf_path = res_path / 'msyhblod.ttf'
     # 欢迎词路径
     welcome_path = Path() / 'data' / 'group' / 'welcome.txt'
+    # 开关状态
     admin_funcs = {
         'admin': ['管理', '踢', '禁', '改', '基础群管'],
         'requests': ['审批', '加群审批', '加群', '自动审批'],
