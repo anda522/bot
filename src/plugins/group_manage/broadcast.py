@@ -1,5 +1,3 @@
-# python3
-# -*- coding: utf-8 -*-
 import asyncio
 
 from nonebot import logger, on_command, get_bot
@@ -227,4 +225,3 @@ async def _(bot: Bot, event: MessageEvent, state: T_State, matcher: Matcher):
         "发送【广播排除-】可从广播排除列表删除群\n" \
         "发送【广播帮助】可查看广播帮助"
     await sd(matcher, r)
-# FIXME 适用于 su 在复习考研时发癫向所有群广播消息 暂时未写入README

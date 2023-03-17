@@ -1,5 +1,6 @@
-# python3
-# -*- coding: utf-8 -*-
+"""
+预处理钩子函数的实现
+"""
 import nonebot
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import (

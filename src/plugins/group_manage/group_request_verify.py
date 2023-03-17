@@ -1,5 +1,3 @@
-# python3
-# -*- coding: utf-8 -*-
 import json
 from typing import Optional
 

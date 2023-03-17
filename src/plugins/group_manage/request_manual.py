@@ -1,5 +1,3 @@
-# python3
-# -*- coding: utf-8 -*-
 import re
 
 from nonebot import on_command
