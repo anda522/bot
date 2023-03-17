@@ -42,17 +42,17 @@ class Config(BaseModel, extra=Extra.ignore):
     # 开关状态
     admin_funcs = {
         'admin': ['管理', '踢', '禁', '改', '基础群管'],
-        'requests': ['审批', '加群审批', '加群', '自动审批'],
+        # 'requests': ['审批', '加群审批', '加群', '自动审批'],
         'wordcloud': ['群词云', '词云', 'wordcloud'],
         'word_analyze': ['消息记录', '群消息记录', '发言记录'],
         'broadcast': ['广播消息', '群广播', '广播'],
         'auto_ban': ['违禁词', '违禁词检测'],
         'group_msg': ['早安晚安', '早安', '晚安'],
-        'particular_e_notice': ['事件通知', '变动通知', '事件提醒'],
+        'notice_monitor': ['事件通知', '变动通知', '事件提醒'],
         'group_recall': ['防撤回', '防止撤回']
     }
 
-    funcs_name_cn = ['基础群管', '加群审批', '群词云', '违禁词检测']
+    # funcs_name_cn = ['基础群管', '加群审批', '群词云', '违禁词检测']
 
     time_scop_map = {
         0: [0, 5 * 60],

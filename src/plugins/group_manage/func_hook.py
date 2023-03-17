@@ -54,7 +54,7 @@ async def _(matcher: Matcher, bot: Bot, state: T_State, event: Event):
                 status = await check_func_status(which_module, str(gid))
                 if not status and which_module not in ['auto_ban',
                                                        'img_check',
-                                                       'particular_e_notice',
+                                                       'notice_monitor',
                                                        'word_analyze',
                                                        'group_recall']:  # 违禁词检测和图片检测日志太多了，不用logger记录或者发消息记录
                     if cb_notice:
@@ -63,7 +63,7 @@ async def _(matcher: Matcher, bot: Bot, state: T_State, event: Event):
                     raise IgnoredException('未开启此功能...')
                 elif not status and which_module in ['auto_ban',
                                                      'img_check',
-                                                     'particular_e_notice',
+                                                     'notice_monitor',
                                                      'word_analyze',
                                                      'group_recall']:
                     raise IgnoredException('未开启此功能...')
@@ -80,7 +80,7 @@ async def _(matcher: Matcher, bot: Bot, state: T_State, event: Event):
                     status = await check_func_status(which_module, str(gid))
                     if not status:
                         re_msg = f"群{gid}收到{event.user_id}的加群请求，flag为：{event.flag}，但审批处于关闭状态\n发送【请求同意/拒绝 " \
-                                 f"flag】来处理次请求，例：\n请求同意{event.flag}\n发送【开关{plugin_config.admin_funcs[which_module][0]}】开启，或人工审批 "
+                                 f"flag】来处理次请求，例：\n请求同意{event.flag}\n发送【开/关{plugin_config.admin_funcs[which_module][0]}】开启，或人工审批 "
                         logger.info(re_msg)
                         if cb_notice:
                             try:

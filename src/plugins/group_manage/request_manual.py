@@ -13,6 +13,7 @@ request_m = on_command('请求', priority=1, block=True)
 @request_m.handle()
 async def _(bot: Bot, event: MessageEvent, state: T_State):
     msg = str(event.message)
+    await request_m.finish(msg)
     flag = re.findall(re.compile(r'\d+'), msg)[0]
     if '同意' in msg and '拒绝' in msg:
         await bot.send(event, '请使用同意或拒绝')

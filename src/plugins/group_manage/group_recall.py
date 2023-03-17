@@ -1,3 +1,6 @@
+"""
+防撤回实现
+"""
 import json
 
 from nonebot import on_notice
@@ -9,7 +12,6 @@ su = global_config.superusers
 
 
 async def _group_recall(bot: Bot, event: NoticeEvent) -> bool:
-    # 有需要自行取消注释
     if event.notice_type == 'group_recall':
         return True
     return False

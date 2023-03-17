@@ -1,5 +1,3 @@
-# python3
-# -*- coding: utf-8 -*-
 from nonebot import on_command
 from nonebot.adapters import Message
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, MessageSegment, ActionFailed
@@ -117,7 +115,7 @@ async def switcher_integrity_check(bot: Bot):
         if not switcher_dict.get(gid):
             switcher_dict[gid] = {}
             for func in plugin_config.admin_funcs:
-                if func in ['auto_ban', 'group_msg', 'particular_e_notice', 'group_recall']:
+                if func in ['auto_ban', 'group_msg', 'notice_monitor', 'group_recall']:
                     switcher_dict[gid][func] = False
                 else:
                     switcher_dict[gid][func] = True
@@ -125,7 +123,7 @@ async def switcher_integrity_check(bot: Bot):
             this_group_switcher = switcher_dict[gid]
             for func in plugin_config.admin_funcs:
                 if this_group_switcher.get(func) is None:
-                    if func in ['auto_ban', 'group_msg', 'particular_e_notice', 'group_recall']:
+                    if func in ['auto_ban', 'group_msg', 'notice_monitor', 'group_recall']:
                         this_group_switcher[func] = False
                     else:
                         this_group_switcher[func] = True
