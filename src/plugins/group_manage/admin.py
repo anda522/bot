@@ -10,12 +10,13 @@ from nonebot.matcher import Matcher
 from nonebot.permission import SUPERUSER
 from nonebot.typing import T_State
 
+from .rule import GROUP_SUB_ADMIN
 from .config import global_config, plugin_config
 from .utils import At, MsgText, banSb, change_s_title, fi, log_fi, sd, Reply, log_sd, json_load, json_upload
 
 su = global_config.superusers
 
-ban = on_command('禁', priority=1, block=True, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER)
+ban = on_command('禁', priority=1, block=True, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER | GROUP_SUB_ADMIN)
 
 
 @ban.handle()
@@ -42,7 +43,7 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
             await fi(matcher, '权限不足')
 
 
-unban = on_command('解', priority=1, block=True, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER)
+unban = on_command('解', priority=1, block=True, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER | GROUP_SUB_ADMIN)
 
 
 @unban.handle()
@@ -89,7 +90,7 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
         await fi(matcher, '权限不足')
 
 
-change = on_command('改', permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER, priority=1, block=True)
+change = on_command('改', permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER | GROUP_SUB_ADMIN, priority=1, block=True)
 
 
 @change.handle()
@@ -166,7 +167,7 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
             await fi(matcher, '不能含有@全体成员')
 
 
-kick = on_command('踢', permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER, priority=1, block=True)
+kick = on_command('踢', permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER | GROUP_SUB_ADMIN, priority=1, block=True)
 
 
 @kick.handle()
@@ -197,7 +198,7 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
         await fi(matcher, '不能含有@全体成员')
 
 
-black = on_command('黑', aliases={'拉黑'}, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER, priority=1, block=True)
+black = on_command('黑', aliases={'拉黑'}, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER | GROUP_SUB_ADMIN, priority=1, block=True)
 
 
 @black.handle()
@@ -239,7 +240,7 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent, state: T_State
         await fi(matcher, '权限不足')
 
 
-unblack = on_command('移除黑名单', aliases={'除黑', '移出黑名单'}, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER,
+unblack = on_command('移除黑名单', aliases={'除黑', '移出黑名单'}, permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER | GROUP_SUB_ADMIN,
                       priority=1, block=True)
 
 
@@ -278,7 +279,7 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent, state: T_State
         await fi(matcher, '权限不足')
 
 
-get_black_list = on_command('查看黑名单', aliases={'黑名单人员'}, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
+get_black_list = on_command('查看黑名单', aliases={'黑名单人员'}, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN | GROUP_SUB_ADMIN,
                             priority=1, block=True)
 
 
@@ -317,7 +318,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 msg_recall = on_command('撤回', priority=1, aliases={'recall'}, block=True,
-                        permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER)
+                        permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER | GROUP_SUB_ADMIN)
 
 
 @msg_recall.handle()
